@@ -1,25 +1,49 @@
 import { useState } from "react";
 import { Button, Form, Input } from "./ContactForm.styled";
+import { nanoid } from 'nanoid';
+import { useDispatch, useSelector } from 'react-redux';
+import { getContacts, addContact } from '../../redux/slice';
 
-export const ContactForm = ({onSubmit}) => {
-    const [name, setName] = useState('');
-    const [number, setNumber] = useState('');
+export const ContactForm = () => {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
+  const contacts = useSelector(getContacts);
+  const dispatch = useDispatch();
 
-    const handleChange = (e) => {
-        const { name, value } = e.currentTarget;
-        if (name === 'name') {
-            setName(value)
-        } else if (name === 'number') {
-            setNumber(value)
-        }
+  const handleChange = e => {
+    const { name, value } = e.target;
+    switch (name) {
+      case 'name':
+        setName(value);
+        break;
+      case 'number':
+        setNumber(value);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    const contact = {
+      id: nanoid(),
+      name,
+      number,
     };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        onSubmit({name, number});
-        setName('');
-        setNumber('');
-    }
+    const enterContacts = contacts.find(
+      contact =>
+        (contact.name === name.toLowerCase() && contact.number === number) ||
+        contact.number === number
+    );
+    enterContacts
+      ? alert(`${name} or ${number} is already in contacts`)
+      : dispatch(addContact(contact));
+
+    setName('');
+    setNumber('');
+  };
 
         return (
             <Form onSubmit={handleSubmit}>
