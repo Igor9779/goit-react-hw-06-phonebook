@@ -28,14 +28,14 @@ export const contactsSlice = createSlice({
     },
 });
 
-const persistConfiguration = {
+const persistConfig = {
     key: 'root',
     storage,
     blacklist: ['filter']
 };
 
 export const persistedContactsReducer = persistReducer(
-    persistConfiguration,
+    persistConfig,
     contactsSlice.reducer
 );
 
